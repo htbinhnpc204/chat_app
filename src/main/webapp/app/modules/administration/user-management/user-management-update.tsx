@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Col, FormText, Row } from 'reactstrap';
-import { ValidatedField, ValidatedForm, isEmail } from 'react-jhipster';
+import { isEmail, ValidatedField, ValidatedForm } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
@@ -12,20 +12,20 @@ export const UserManagementUpdate = () => {
 
   const navigate = useNavigate();
 
-  const { login } = useParams<'login'>();
-  const isNew = login === undefined;
+  const { login: username } = useParams<'login'>();
+  const isNew = username === undefined;
 
   useEffect(() => {
     if (isNew) {
       dispatch(reset());
     } else {
-      dispatch(getUser(login));
+      dispatch(getUser(username));
     }
     dispatch(getRoles());
     return () => {
       dispatch(reset());
     };
-  }, [login]);
+  }, [username]);
 
   const handleClose = () => {
     navigate('/admin/user-management');
@@ -62,7 +62,7 @@ export const UserManagementUpdate = () => {
               {user.id ? <ValidatedField type="text" name="id" required readOnly label="ID" validate={{ required: true }} /> : null}
               <ValidatedField
                 type="text"
-                name="login"
+                name="username"
                 label="Tên đăng nhập"
                 validate={{
                   required: {

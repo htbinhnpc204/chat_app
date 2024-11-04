@@ -4,7 +4,11 @@ import com.personal.chatapp.domain.Authority;
 import com.personal.chatapp.domain.User;
 import com.personal.chatapp.service.dto.AdminUserDTO;
 import com.personal.chatapp.service.dto.UserDTO;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapping;
@@ -46,7 +50,7 @@ public class UserMapper {
         } else {
             User user = new User();
             user.setId(userDTO.getId());
-            user.setLogin(userDTO.getLogin());
+            user.setUsername(userDTO.getUsername());
             user.setFirstName(userDTO.getFirstName());
             user.setLastName(userDTO.getLastName());
             user.setEmail(userDTO.getEmail());
@@ -127,7 +131,7 @@ public class UserMapper {
         }
         UserDTO userDto = new UserDTO();
         userDto.setId(user.getId());
-        userDto.setLogin(user.getLogin());
+        userDto.setUsername(user.getUsername());
         return userDto;
     }
 

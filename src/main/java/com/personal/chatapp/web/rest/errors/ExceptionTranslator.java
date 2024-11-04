@@ -72,7 +72,7 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         HttpStatusCode statusCode,
         WebRequest request
     ) {
-        body = body == null ? wrapAndCustomizeProblem((Throwable) ex, (NativeWebRequest) request) : body;
+        body = body == null ? wrapAndCustomizeProblem(ex, (NativeWebRequest) request) : body;
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
     }
 
@@ -83,7 +83,7 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     private ProblemDetailWithCause getProblemDetailWithCause(Throwable ex) {
         if (
             ex instanceof com.personal.chatapp.service.UsernameAlreadyUsedException
-        ) return (ProblemDetailWithCause) new LoginAlreadyUsedException().getBody();
+        ) return (ProblemDetailWithCause) new UsernameAlreadyUsedException().getBody();
         if (
             ex instanceof com.personal.chatapp.service.EmailAlreadyUsedException
         ) return (ProblemDetailWithCause) new EmailAlreadyUsedException().getBody();

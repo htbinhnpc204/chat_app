@@ -1,5 +1,8 @@
 package com.personal.chatapp.config;
 
+import com.personal.chatapp.domain.Authority;
+import com.personal.chatapp.domain.User;
+import com.personal.chatapp.repository.UserRepository;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 import javax.cache.configuration.MutableConfiguration;
@@ -18,7 +21,6 @@ import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
-import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import tech.jhipster.config.JHipsterProperties;
@@ -78,11 +80,11 @@ public class CacheConfiguration {
     @Bean
     public JCacheManagerCustomizer cacheManagerCustomizer(javax.cache.configuration.Configuration<Object, Object> jcacheConfiguration) {
         return cm -> {
-            createCache(cm, com.personal.chatapp.repository.UserRepository.USERS_BY_LOGIN_CACHE, jcacheConfiguration);
-            createCache(cm, com.personal.chatapp.repository.UserRepository.USERS_BY_EMAIL_CACHE, jcacheConfiguration);
-            createCache(cm, com.personal.chatapp.domain.User.class.getName(), jcacheConfiguration);
-            createCache(cm, com.personal.chatapp.domain.Authority.class.getName(), jcacheConfiguration);
-            createCache(cm, com.personal.chatapp.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            createCache(cm, UserRepository.USERS_BY_USERNAME_CACHE, jcacheConfiguration);
+            createCache(cm, UserRepository.USERS_BY_EMAIL_CACHE, jcacheConfiguration);
+            createCache(cm, User.class.getName(), jcacheConfiguration);
+            createCache(cm, Authority.class.getName(), jcacheConfiguration);
+            createCache(cm, User.class.getName() + ".authorities", jcacheConfiguration);
             // jhipster-needle-redis-add-entry
         };
     }

@@ -44,7 +44,7 @@ class DomainUserDetailsServiceIT {
 
     public User getUserOne() {
         User userOne = new User();
-        userOne.setLogin(USER_ONE_LOGIN);
+        userOne.setUsername(USER_ONE_LOGIN);
         userOne.setPassword(RandomStringUtils.randomAlphanumeric(60));
         userOne.setActivated(true);
         userOne.setEmail(USER_ONE_EMAIL);
@@ -56,7 +56,7 @@ class DomainUserDetailsServiceIT {
 
     public User getUserTwo() {
         User userTwo = new User();
-        userTwo.setLogin(USER_TWO_LOGIN);
+        userTwo.setUsername(USER_TWO_LOGIN);
         userTwo.setPassword(RandomStringUtils.randomAlphanumeric(60));
         userTwo.setActivated(true);
         userTwo.setEmail(USER_TWO_EMAIL);
@@ -68,7 +68,7 @@ class DomainUserDetailsServiceIT {
 
     public User getUserThree() {
         User userThree = new User();
-        userThree.setLogin(USER_THREE_LOGIN);
+        userThree.setUsername(USER_THREE_LOGIN);
         userThree.setPassword(RandomStringUtils.randomAlphanumeric(60));
         userThree.setActivated(false);
         userThree.setEmail(USER_THREE_EMAIL);
@@ -93,14 +93,14 @@ class DomainUserDetailsServiceIT {
     }
 
     @Test
-    void assertThatUserCanBeFoundByLogin() {
+    void assertThatUserCanBeFoundByUsername() {
         UserDetails userDetails = domainUserDetailsService.loadUserByUsername(USER_ONE_LOGIN);
         assertThat(userDetails).isNotNull();
         assertThat(userDetails.getUsername()).isEqualTo(USER_ONE_LOGIN);
     }
 
     @Test
-    void assertThatUserCanBeFoundByLoginIgnoreCase() {
+    void assertThatUserCanBeFoundByUsernameIgnoreCase() {
         UserDetails userDetails = domainUserDetailsService.loadUserByUsername(USER_ONE_LOGIN.toUpperCase(Locale.ENGLISH));
         assertThat(userDetails).isNotNull();
         assertThat(userDetails.getUsername()).isEqualTo(USER_ONE_LOGIN);

@@ -44,7 +44,7 @@ export const PasswordPage = () => {
       <Row className="justify-content-center">
         <Col md="8">
           <h2 id="password-title">
-            Mật khẩu cho tài khoản [<strong>{account.login}</strong>]
+            Mật khẩu cho tài khoản [<strong>{account.username}</strong>]
           </h2>
           <ValidatedForm id="password-form" onSubmit={handleValidSubmit}>
             <ValidatedField

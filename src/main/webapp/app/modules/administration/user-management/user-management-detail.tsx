@@ -23,13 +23,13 @@ export const UserManagementDetail = () => {
   return (
     <div>
       <h2>
-        Tài khoản [<strong>{user.login}</strong>]
+        Tài khoản [<strong>{user.username}</strong>]
       </h2>
       <Row size="md">
         <dl className="jh-entity-details">
           <dt>Tên đăng nhập</dt>
           <dd>
-            <span>{user.login}</span>&nbsp;
+            <span>{user.username}</span>&nbsp;
             {user.activated ? <Badge color="success">Kích hoạt</Badge> : <Badge color="danger">Khóa</Badge>}
           </dd>
           <dt>Tên</dt>

@@ -71,7 +71,7 @@ class UserServiceIT {
     @BeforeEach
     public void init() {
         user = new User();
-        user.setLogin(DEFAULT_LOGIN);
+        user.setUsername(DEFAULT_LOGIN);
         user.setPassword(RandomStringUtils.randomAlphanumeric(60));
         user.setActivated(true);
         user.setEmail(DEFAULT_EMAIL);
@@ -117,7 +117,7 @@ class UserServiceIT {
         user.setActivated(false);
         userRepository.saveAndFlush(user);
 
-        Optional<User> maybeUser = userService.requestPasswordReset(user.getLogin());
+        Optional<User> maybeUser = userService.requestPasswordReset(user.getUsername());
         assertThat(maybeUser).isNotPresent();
         userRepository.delete(user);
     }

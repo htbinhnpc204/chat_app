@@ -25,14 +25,14 @@ export const UserManagementDeleteDialog = () => {
   const user = useAppSelector(state => state.userManagement.user);
 
   const confirmDelete = event => {
-    dispatch(deleteUser(user.login));
+    dispatch(deleteUser(user.username));
     handleClose(event);
   };
 
   return (
     <Modal isOpen toggle={handleClose}>
       <ModalHeader toggle={handleClose}>Xác nhận hành động xóa</ModalHeader>
-      <ModalBody>Bạn có chắc chắn muốn xóa tài khoản {user.login}?</ModalBody>
+      <ModalBody>Bạn có chắc chắn muốn xóa tài khoản {user.username}?</ModalBody>
       <ModalFooter>
         <Button color="secondary" onClick={handleClose}>
           <FontAwesomeIcon icon="ban" />

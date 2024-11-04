@@ -7,16 +7,24 @@ import com.personal.chatapp.service.MailService;
 import com.personal.chatapp.service.UserService;
 import com.personal.chatapp.service.dto.AdminUserDTO;
 import com.personal.chatapp.service.dto.PasswordChangeDTO;
-import com.personal.chatapp.web.rest.errors.*;
+import com.personal.chatapp.web.rest.errors.EmailAlreadyUsedException;
+import com.personal.chatapp.web.rest.errors.InvalidPasswordException;
+import com.personal.chatapp.web.rest.errors.UsernameAlreadyUsedException;
 import com.personal.chatapp.web.rest.vm.KeyAndPasswordVM;
 import com.personal.chatapp.web.rest.vm.ManagedUserVM;
 import jakarta.validation.Valid;
-import java.util.*;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST controller for managing the current user's account.
@@ -52,7 +60,7 @@ public class AccountResource {
      * @param managedUserVM the managed user View Model.
      * @throws InvalidPasswordException {@code 400 (Bad Request)} if the password is incorrect.
      * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already used.
-     * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already used.
+     * @throws UsernameAlreadyUsedException {@code 400 (Bad Request)} if the login is already used.
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -104,10 +112,10 @@ public class AccountResource {
         String userLogin = SecurityUtils.getCurrentUserLogin()
             .orElseThrow(() -> new AccountResourceException("Current user login not found"));
         Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
-        if (existingUser.isPresent() && (!existingUser.orElseThrow().getLogin().equalsIgnoreCase(userLogin))) {
+        if (existingUser.isPresent() && (!existingUser.orElseThrow().getUsername().equalsIgnoreCase(userLogin))) {
             throw new EmailAlreadyUsedException();
         }
-        Optional<User> user = userRepository.findOneByLogin(userLogin);
+        Optional<User> user = userRepository.findOneByUsername(userLogin);
         if (!user.isPresent()) {
             throw new AccountResourceException("User could not be found");
         }

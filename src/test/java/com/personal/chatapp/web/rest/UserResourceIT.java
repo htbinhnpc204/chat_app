@@ -2,8 +2,13 @@ package com.personal.chatapp.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.personal.chatapp.IntegrationTest;
@@ -14,7 +19,8 @@ import com.personal.chatapp.service.UserService;
 import com.personal.chatapp.service.dto.AdminUserDTO;
 import com.personal.chatapp.service.mapper.UserMapper;
 import jakarta.persistence.EntityManager;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -96,7 +102,7 @@ class UserResourceIT {
      */
     public static User createEntity() {
         User persistUser = new User();
-        persistUser.setLogin(DEFAULT_LOGIN + RandomStringUtils.randomAlphabetic(5));
+        persistUser.setUsername(DEFAULT_LOGIN + RandomStringUtils.randomAlphabetic(5));
         persistUser.setPassword(RandomStringUtils.randomAlphanumeric(60));
         persistUser.setActivated(true);
         persistUser.setEmail(RandomStringUtils.randomAlphabetic(5) + DEFAULT_EMAIL);
@@ -112,7 +118,7 @@ class UserResourceIT {
      */
     public static User initTestUser() {
         User persistUser = createEntity();
-        persistUser.setLogin(DEFAULT_LOGIN);
+        persistUser.setUsername(DEFAULT_LOGIN);
         persistUser.setEmail(DEFAULT_EMAIL);
         return persistUser;
     }
@@ -132,7 +138,7 @@ class UserResourceIT {
             .forEach(Cache::clear);
         userService.deleteUser(DEFAULT_LOGIN);
         userService.deleteUser(UPDATED_LOGIN);
-        userService.deleteUser(user.getLogin());
+        userService.deleteUser(user.getUsername());
         userService.deleteUser("anotherlogin");
         assertThat(userRepository.count()).isEqualTo(numberOfUsers);
         numberOfUsers = null;
@@ -143,7 +149,7 @@ class UserResourceIT {
     void createUser() throws Exception {
         // Create the User
         AdminUserDTO userDTO = new AdminUserDTO();
-        userDTO.setLogin(DEFAULT_LOGIN);
+        userDTO.setUsername(DEFAULT_LOGIN);
         userDTO.setFirstName(DEFAULT_FIRSTNAME);
         userDTO.setLastName(DEFAULT_LASTNAME);
         userDTO.setEmail(DEFAULT_EMAIL);
@@ -164,7 +170,7 @@ class UserResourceIT {
 
         User convertedUser = userMapper.userDTOToUser(returnedUserDTO);
         // Validate the returned User
-        assertThat(convertedUser.getLogin()).isEqualTo(DEFAULT_LOGIN);
+        assertThat(convertedUser.getUsername()).isEqualTo(DEFAULT_LOGIN);
         assertThat(convertedUser.getFirstName()).isEqualTo(DEFAULT_FIRSTNAME);
         assertThat(convertedUser.getLastName()).isEqualTo(DEFAULT_LASTNAME);
         assertThat(convertedUser.getEmail()).isEqualTo(DEFAULT_EMAIL);
@@ -179,7 +185,7 @@ class UserResourceIT {
 
         AdminUserDTO userDTO = new AdminUserDTO();
         userDTO.setId(DEFAULT_ID);
-        userDTO.setLogin(DEFAULT_LOGIN);
+        userDTO.setUsername(DEFAULT_LOGIN);
         userDTO.setFirstName(DEFAULT_FIRSTNAME);
         userDTO.setLastName(DEFAULT_LASTNAME);
         userDTO.setEmail(DEFAULT_EMAIL);
@@ -205,7 +211,7 @@ class UserResourceIT {
         int databaseSizeBeforeCreate = userRepository.findAll().size();
 
         AdminUserDTO userDTO = new AdminUserDTO();
-        userDTO.setLogin(DEFAULT_LOGIN); // this login should already be used
+        userDTO.setUsername(DEFAULT_LOGIN); // this login should already be used
         userDTO.setFirstName(DEFAULT_FIRSTNAME);
         userDTO.setLastName(DEFAULT_LASTNAME);
         userDTO.setEmail("anothermail@localhost");
@@ -231,7 +237,7 @@ class UserResourceIT {
         int databaseSizeBeforeCreate = userRepository.findAll().size();
 
         AdminUserDTO userDTO = new AdminUserDTO();
-        userDTO.setLogin("anotherlogin");
+        userDTO.setUsername("anotherlogin");
         userDTO.setFirstName(DEFAULT_FIRSTNAME);
         userDTO.setLastName(DEFAULT_LASTNAME);
         userDTO.setEmail(DEFAULT_EMAIL); // this email should already be used
@@ -274,21 +280,21 @@ class UserResourceIT {
         // Initialize the database
         userRepository.saveAndFlush(user);
 
-        assertThat(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).get(user.getLogin())).isNull();
+        assertThat(cacheManager.getCache(UserRepository.USERS_BY_USERNAME_CACHE).get(user.getUsername())).isNull();
 
         // Get the user
         restUserMockMvc
-            .perform(get("/api/admin/users/{login}", user.getLogin()))
+            .perform(get("/api/admin/users/{login}", user.getUsername()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.login").value(user.getLogin()))
+            .andExpect(jsonPath("$.login").value(user.getUsername()))
             .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRSTNAME))
             .andExpect(jsonPath("$.lastName").value(DEFAULT_LASTNAME))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
             .andExpect(jsonPath("$.imageUrl").value(DEFAULT_IMAGEURL))
             .andExpect(jsonPath("$.langKey").value(DEFAULT_LANGKEY));
 
-        assertThat(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).get(user.getLogin())).isNotNull();
+        assertThat(cacheManager.getCache(UserRepository.USERS_BY_USERNAME_CACHE).get(user.getUsername())).isNotNull();
     }
 
     @Test
@@ -309,7 +315,7 @@ class UserResourceIT {
 
         AdminUserDTO userDTO = new AdminUserDTO();
         userDTO.setId(updatedUser.getId());
-        userDTO.setLogin(updatedUser.getLogin());
+        userDTO.setUsername(updatedUser.getUsername());
         userDTO.setFirstName(UPDATED_FIRSTNAME);
         userDTO.setLastName(UPDATED_LASTNAME);
         userDTO.setEmail(UPDATED_EMAIL);
@@ -350,7 +356,7 @@ class UserResourceIT {
 
         AdminUserDTO userDTO = new AdminUserDTO();
         userDTO.setId(updatedUser.getId());
-        userDTO.setLogin(UPDATED_LOGIN);
+        userDTO.setUsername(UPDATED_LOGIN);
         userDTO.setFirstName(UPDATED_FIRSTNAME);
         userDTO.setLastName(UPDATED_LASTNAME);
         userDTO.setEmail(UPDATED_EMAIL);
@@ -371,7 +377,7 @@ class UserResourceIT {
         assertPersistedUsers(users -> {
             assertThat(users).hasSize(databaseSizeBeforeUpdate);
             User testUser = users.stream().filter(usr -> usr.getId().equals(updatedUser.getId())).findFirst().orElseThrow();
-            assertThat(testUser.getLogin()).isEqualTo(UPDATED_LOGIN);
+            assertThat(testUser.getUsername()).isEqualTo(UPDATED_LOGIN);
             assertThat(testUser.getFirstName()).isEqualTo(UPDATED_FIRSTNAME);
             assertThat(testUser.getLastName()).isEqualTo(UPDATED_LASTNAME);
             assertThat(testUser.getEmail()).isEqualTo(UPDATED_EMAIL);
@@ -387,7 +393,7 @@ class UserResourceIT {
         userRepository.saveAndFlush(user);
 
         User anotherUser = new User();
-        anotherUser.setLogin("jhipster");
+        anotherUser.setUsername("jhipster");
         anotherUser.setPassword(RandomStringUtils.randomAlphanumeric(60));
         anotherUser.setActivated(true);
         anotherUser.setEmail("jhipster@localhost");
@@ -402,7 +408,7 @@ class UserResourceIT {
 
         AdminUserDTO userDTO = new AdminUserDTO();
         userDTO.setId(updatedUser.getId());
-        userDTO.setLogin(updatedUser.getLogin());
+        userDTO.setUsername(updatedUser.getUsername());
         userDTO.setFirstName(updatedUser.getFirstName());
         userDTO.setLastName(updatedUser.getLastName());
         userDTO.setEmail("jhipster@localhost"); // this email should already be used by anotherUser
@@ -427,7 +433,7 @@ class UserResourceIT {
         userRepository.saveAndFlush(user);
 
         User anotherUser = new User();
-        anotherUser.setLogin("jhipster");
+        anotherUser.setUsername("jhipster");
         anotherUser.setPassword(RandomStringUtils.randomAlphanumeric(60));
         anotherUser.setActivated(true);
         anotherUser.setEmail("jhipster@localhost");
@@ -442,7 +448,7 @@ class UserResourceIT {
 
         AdminUserDTO userDTO = new AdminUserDTO();
         userDTO.setId(updatedUser.getId());
-        userDTO.setLogin("jhipster"); // this login should already be used by anotherUser
+        userDTO.setUsername("jhipster"); // this login should already be used by anotherUser
         userDTO.setFirstName(updatedUser.getFirstName());
         userDTO.setLastName(updatedUser.getLastName());
         userDTO.setEmail(updatedUser.getEmail());
@@ -469,10 +475,10 @@ class UserResourceIT {
 
         // Delete the user
         restUserMockMvc
-            .perform(delete("/api/admin/users/{login}", user.getLogin()).accept(MediaType.APPLICATION_JSON))
+            .perform(delete("/api/admin/users/{login}", user.getUsername()).accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
-        assertThat(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).get(user.getLogin())).isNull();
+        assertThat(cacheManager.getCache(UserRepository.USERS_BY_USERNAME_CACHE).get(user.getUsername())).isNull();
 
         // Validate the database is empty
         assertPersistedUsers(users -> assertThat(users).hasSize(databaseSizeBeforeDelete - 1));

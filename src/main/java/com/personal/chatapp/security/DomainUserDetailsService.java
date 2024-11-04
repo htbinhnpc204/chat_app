@@ -3,7 +3,8 @@ package com.personal.chatapp.security;
 import com.personal.chatapp.domain.Authority;
 import com.personal.chatapp.domain.User;
 import com.personal.chatapp.repository.UserRepository;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ public class DomainUserDetailsService implements UserDetailsService {
 
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
         return userRepository
-            .findOneWithAuthoritiesByLogin(lowercaseLogin)
+            .findOneWithAuthoritiesByUsername(lowercaseLogin)
             .map(user -> createSpringSecurityUser(lowercaseLogin, user))
             .orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database"));
     }
@@ -57,6 +58,6 @@ public class DomainUserDetailsService implements UserDetailsService {
             .map(Authority::getName)
             .map(SimpleGrantedAuthority::new)
             .toList();
-        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), grantedAuthorities);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
     }
 }

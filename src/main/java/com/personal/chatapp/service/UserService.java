@@ -11,7 +11,11 @@ import com.personal.chatapp.service.dto.AdminUserDTO;
 import com.personal.chatapp.service.dto.UserDTO;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +99,7 @@ public class UserService {
 
     public User registerUser(AdminUserDTO userDTO, String password) {
         userRepository
-            .findOneByLogin(userDTO.getLogin().toLowerCase())
+            .findOneByUsername(userDTO.getUsername().toLowerCase())
             .ifPresent(existingUser -> {
                 boolean removed = removeNonActivatedUser(existingUser);
                 if (!removed) {
@@ -112,7 +116,7 @@ public class UserService {
             });
         User newUser = new User();
         String encryptedPassword = passwordEncoder.encode(password);
-        newUser.setLogin(userDTO.getLogin().toLowerCase());
+        newUser.setUsername(userDTO.getUsername().toLowerCase());
         // new user gets initially a generated password
         newUser.setPassword(encryptedPassword);
         newUser.setFirstName(userDTO.getFirstName());
@@ -147,7 +151,7 @@ public class UserService {
 
     public User createUser(AdminUserDTO userDTO) {
         User user = new User();
-        user.setLogin(userDTO.getLogin().toLowerCase());
+        user.setUsername(userDTO.getUsername().toLowerCase());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         if (userDTO.getEmail() != null) {
@@ -192,7 +196,7 @@ public class UserService {
             .map(Optional::get)
             .map(user -> {
                 this.clearUserCaches(user);
-                user.setLogin(userDTO.getLogin().toLowerCase());
+                user.setUsername(userDTO.getUsername().toLowerCase());
                 user.setFirstName(userDTO.getFirstName());
                 user.setLastName(userDTO.getLastName());
                 if (userDTO.getEmail() != null) {
@@ -220,7 +224,7 @@ public class UserService {
 
     public void deleteUser(String login) {
         userRepository
-            .findOneByLogin(login)
+            .findOneByUsername(login)
             .ifPresent(user -> {
                 userRepository.delete(user);
                 this.clearUserCaches(user);
@@ -239,7 +243,7 @@ public class UserService {
      */
     public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
         SecurityUtils.getCurrentUserLogin()
-            .flatMap(userRepository::findOneByLogin)
+            .flatMap(userRepository::findOneByUsername)
             .ifPresent(user -> {
                 user.setFirstName(firstName);
                 user.setLastName(lastName);
@@ -257,7 +261,7 @@ public class UserService {
     @Transactional
     public void changePassword(String currentClearTextPassword, String newPassword) {
         SecurityUtils.getCurrentUserLogin()
-            .flatMap(userRepository::findOneByLogin)
+            .flatMap(userRepository::findOneByUsername)
             .ifPresent(user -> {
                 String currentEncryptedPassword = user.getPassword();
                 if (!passwordEncoder.matches(currentClearTextPassword, currentEncryptedPassword)) {
@@ -281,26 +285,26 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUserWithAuthoritiesByLogin(String login) {
-        return userRepository.findOneWithAuthoritiesByLogin(login);
+    public Optional<User> getUserWithAuthoritiesByUsername(String login) {
+        return userRepository.findOneWithAuthoritiesByUsername(login);
     }
 
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities() {
-        return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByLogin);
+        return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByUsername);
     }
 
     /**
      * Not activated users should be automatically deleted after 3 days.
      * <p>
-     * This is scheduled to get fired everyday, at 01:00 (am).
+     * This is scheduled to get fired every day, at 01:00 (am).
      */
     @Scheduled(cron = "0 0 1 * * ?")
     public void removeNotActivatedUsers() {
         userRepository
             .findAllByActivatedIsFalseAndActivationKeyIsNotNullAndCreatedDateBefore(Instant.now().minus(3, ChronoUnit.DAYS))
             .forEach(user -> {
-                LOG.debug("Deleting not activated user {}", user.getLogin());
+                LOG.debug("Deleting not activated user {}", user.getUsername());
                 userRepository.delete(user);
                 this.clearUserCaches(user);
             });
@@ -316,7 +320,7 @@ public class UserService {
     }
 
     private void clearUserCaches(User user) {
-        Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
+        Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_USERNAME_CACHE)).evict(user.getUsername());
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }

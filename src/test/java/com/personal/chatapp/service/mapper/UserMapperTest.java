@@ -32,7 +32,7 @@ class UserMapperTest {
     public void init() {
         userMapper = new UserMapper();
         user = new User();
-        user.setLogin(DEFAULT_LOGIN);
+        user.setUsername(DEFAULT_LOGIN);
         user.setPassword(RandomStringUtils.randomAlphanumeric(60));
         user.setActivated(true);
         user.setEmail("johndoe@localhost");
@@ -59,7 +59,7 @@ class UserMapperTest {
         AdminUserDTO convertedUserDto = userMapper.userToAdminUserDTO(user);
 
         assertThat(convertedUserDto.getId()).isEqualTo(user.getId());
-        assertThat(convertedUserDto.getLogin()).isEqualTo(user.getLogin());
+        assertThat(convertedUserDto.getUsername()).isEqualTo(user.getUsername());
         assertThat(convertedUserDto.getFirstName()).isEqualTo(user.getFirstName());
         assertThat(convertedUserDto.getLastName()).isEqualTo(user.getLastName());
         assertThat(convertedUserDto.getEmail()).isEqualTo(user.getEmail());
@@ -78,7 +78,7 @@ class UserMapperTest {
         User convertedUser = userMapper.userDTOToUser(userDto);
 
         assertThat(convertedUser.getId()).isEqualTo(userDto.getId());
-        assertThat(convertedUser.getLogin()).isEqualTo(userDto.getLogin());
+        assertThat(convertedUser.getUsername()).isEqualTo(userDto.getUsername());
         assertThat(convertedUser.getFirstName()).isEqualTo(userDto.getFirstName());
         assertThat(convertedUser.getLastName()).isEqualTo(userDto.getLastName());
         assertThat(convertedUser.getEmail()).isEqualTo(userDto.getEmail());

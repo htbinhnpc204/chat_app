@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Badge, Button, Table } from 'reactstrap';
-import { JhiItemCount, JhiPagination, TextFormat, getPaginationState } from 'react-jhipster';
+import { getPaginationState, JhiItemCount, JhiPagination, TextFormat } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 
@@ -134,13 +134,13 @@ export const UserManagement = () => {
         </thead>
         <tbody>
           {users.map((user, i) => (
-            <tr id={user.login} key={`user-${i}`}>
+            <tr id={user.username} key={`user-${i}`}>
               <td>
-                <Button tag={Link} to={user.login} color="link" size="sm">
+                <Button tag={Link} to={user.username} color="link" size="sm">
                   {user.id}
                 </Button>
               </td>
-              <td>{user.login}</td>
+              <td>{user.username}</td>
               <td>{user.email}</td>
               <td>
                 {user.activated ? (
@@ -173,13 +173,13 @@ export const UserManagement = () => {
               </td>
               <td className="text-end">
                 <div className="btn-group flex-btn-group-container">
-                  <Button tag={Link} to={user.login} color="info" size="sm">
+                  <Button tag={Link} to={user.username} color="info" size="sm">
                     <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline">Xem</span>
                   </Button>
-                  <Button tag={Link} to={`${user.login}/edit`} color="primary" size="sm">
+                  <Button tag={Link} to={`${user.username}/edit`} color="primary" size="sm">
                     <FontAwesomeIcon icon="pencil-alt" /> <span className="d-none d-md-inline">Sửa</span>
                   </Button>
-                  <Button tag={Link} to={`${user.login}/delete`} color="danger" size="sm" disabled={account.login === user.login}>
+                  <Button tag={Link} to={`${user.username}/delete`} color="danger" size="sm" disabled={account.username === user.username}>
                     <FontAwesomeIcon icon="trash" /> <span className="d-none d-md-inline">Xóa</span>
                   </Button>
                 </div>

@@ -8,7 +8,7 @@ const Footer = () => (
   <div className="footer page-content">
     <Row>
       <Col md="12">
-        <p>Đây là chân trang của bạn</p>
+        <p>Your footer here</p>
       </Col>
     </Row>
   </div>

@@ -1,10 +1,18 @@
 package com.personal.chatapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.Objects;
+import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.domain.Persistable;
@@ -13,12 +21,14 @@ import org.springframework.data.domain.Persistable;
  * A Authority.
  */
 @Entity
-@Table(name = "jhi_authority")
+@Data
+@Table(name = "authorities")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonIgnoreProperties(value = { "new", "id" })
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Authority implements Serializable, Persistable<String> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @NotNull
@@ -30,19 +40,9 @@ public class Authority implements Serializable, Persistable<String> {
     @Transient
     private boolean isPersisted;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-
-    public String getName() {
-        return this.name;
-    }
-
     public Authority name(String name) {
         this.setName(name);
         return this;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @PostLoad
@@ -65,31 +65,5 @@ public class Authority implements Serializable, Persistable<String> {
     public Authority setIsPersisted() {
         this.isPersisted = true;
         return this;
-    }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Authority)) {
-            return false;
-        }
-        return getName() != null && getName().equals(((Authority) o).getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getName());
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "Authority{" +
-            "name=" + getName() +
-            "}";
     }
 }
