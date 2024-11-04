@@ -1,0 +1,3 @@
+org.springframework.test.context.ContextCustomizerFactory = com.personal.\
+    chatapp.config.SqlTestContainersSpringContextCustomizerFactory,com.personal.\
+    chatapp.config.RedisTestContainersSpringContextCustomizerFactory
