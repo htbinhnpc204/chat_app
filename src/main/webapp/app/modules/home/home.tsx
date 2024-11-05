@@ -16,11 +16,35 @@ export const Home = () => {
         <span className="hipster rounded" />
       </Col>
       <Col md="9">
-        <h1 className="display-4">Chào mừng bạn đến với Java Hipster!</h1>
+        <h1 className="display-4">Welcome to my chat app!</h1>
+
+        {/* Log the user.authorities if user is logged */}
+
+        {account?.authorities ? (
+          <div>
+            <Alert color="success">Your authorities are: {account.authorities.join(', ')}</Alert>
+          </div>
+        ) : null}
+
+        {/* If user's authorities contain ROLE_MODERATOR display the room action (Create, modify, delete) */}
+
+        {account?.authorities?.includes('ROLE_MODERATOR') ? (
+          <div>
+            <Alert color="success">You can manage rooms</Alert>
+            <Link to="/rooms" className="btn btn-primary">
+              Manage rooms
+            </Link>
+
+            <Link to="/rooms/new" className="btn btn-primary">
+              Create new room
+            </Link>
+          </div>
+        ) : null}
+
         <p className="lead">Đây là trang chủ của bạn</p>
         {account?.login ? (
           <div>
-            <Alert color="success">Bạn đang đăng nhập bằng tài khoản &quot;{account.login}&quot;.</Alert>
+            <Alert color="success">Bạn đang đăng nhập bằng tài khoản &quot;{account.username}&quot;.</Alert>
           </div>
         ) : (
           <div>
