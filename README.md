@@ -2,6 +2,37 @@
 
 This application was generated using JHipster 8.7.1, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v8.7.1](https://www.jhipster.tech/documentation-archive/v8.7.1).
 
+## Requirements
+
+### Admin:
+
+- Login (default account is `admin:admin`)
+- Password change
+- Add, Edit, Delete, List users
+- User's password reset function
+- Assign roles to users (Normal user can chat, Moderate user can delete messages, create room, add user to room)
+- Add, Edit, Delete, List rooms
+
+### Normal User
+
+- Register (require email verification)
+- Room chat, can't chat privately. Must have file sharing, pin message like normal chat software
+- Profile changing (password, avatar, name, email)
+- Forgot password
+
+### Morderate User (Có đầy đủ chức năng của user, và có thêm)
+
+- Delete message
+- Room creation
+- Add room member
+- Delete room member
+
+### Plus function
+
+- Using websocket for real-time chat. Example: kafka. The reason is to ensure that when many people chat at the same time, the system is not hung or lost messages
+- Integrated video call. Example: jitsi. Jitsi also allows screen sharing and recording.
+- Integrated AI to classify messages. The reason is to distinguish spam messages, advertising messages, abusive messages.
+
 ## Project Structure
 
 Node is required for generation and recommended for development. `package.json` is always generated for a better development experience with prettier, commit hooks, scripts and so on.
