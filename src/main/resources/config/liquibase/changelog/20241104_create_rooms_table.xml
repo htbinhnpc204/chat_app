@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="20231010-1" author="binhht">
+    <createTable tableName="rooms">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="name" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="varchar(255)"/>
+      <column name="created_by" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp"/>
+      <column name="last_modified_by" type="varchar(50)"/>
+      <column name="last_modified_date" type="timestamp"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="20231010-2" author="binhht">
+    <createTable tableName="room_member">
+      <column name="room_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="user_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="room_member"
+                             baseColumnNames="room_id"
+                             referencedTableName="room"
+                             referencedColumnNames="id"
+                             constraintName="fk_room_member_room_id"/>
+    <addForeignKeyConstraint baseTableName="room_member"
+                             baseColumnNames="user_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                             constraintName="fk_room_member_user_id"/>
+  </changeSet>
+</databaseChangeLog>
