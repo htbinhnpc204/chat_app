@@ -1,13 +1,14 @@
 package com.personal.chatapp.service;
 
 import com.personal.chatapp.domain.Room;
-import com.personal.chatapp.domain.RoomMember;
 import com.personal.chatapp.domain.User;
 import com.personal.chatapp.repository.RoomRepository;
 import com.personal.chatapp.repository.UserRepository;
 import com.personal.chatapp.service.dto.RoomDTO;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -57,13 +58,15 @@ public class RoomService {
         roomRepository.deleteById(id);
     }
 
-    public void addMember(Long roomId, Long userId) {
-        Room room = roomRepository.findById(roomId).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
-        RoomMember roomMember = new RoomMember();
-        roomMember.setRoom(room);
-        roomMember.setUser(user);
-        room.getMembers().add(roomMember);
+    public void addMembers(Long roomId, List<Long> userIds) {
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new ObjectNotFoundException(roomId, Room.class.getName()));
+        List<User> users = userRepository.findAllById(userIds);
+
+        if (users.size() != userIds.size()) {
+            throw new ObjectNotFoundException(userIds, User.class.getName());
+        }
+
+        room.getMembers().addAll(users);
         roomRepository.save(room);
     }
 }

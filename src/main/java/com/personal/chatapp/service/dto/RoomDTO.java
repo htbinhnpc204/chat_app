@@ -1,7 +1,6 @@
 package com.personal.chatapp.service.dto;
 
 import com.personal.chatapp.domain.Room;
-import com.personal.chatapp.domain.RoomMember;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
@@ -31,7 +30,7 @@ public class RoomDTO implements Serializable {
         this.id = room.getId();
         this.name = room.getName();
         this.description = room.getDescription();
-        this.members = room.getMembers().stream().map(RoomMember::getUser).map(UserDTO::new).collect(Collectors.toSet());
+        this.members = room.getMembers().stream().map(UserDTO::new).collect(Collectors.toSet());
         this.createdBy = room.getCreatedBy();
         this.createdDate = room.getCreatedDate();
         this.lastModifiedBy = room.getLastModifiedBy();

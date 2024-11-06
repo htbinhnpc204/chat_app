@@ -3,6 +3,7 @@ package com.personal.chatapp.web.rest;
 import com.personal.chatapp.domain.Room;
 import com.personal.chatapp.service.RoomService;
 import com.personal.chatapp.service.dto.RoomDTO;
+import com.personal.chatapp.service.dto.request.RoomAddMembersRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -63,10 +64,10 @@ public class RoomResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{roomId}/members/{userId}")
-    @PreAuthorize("hasAnyAuthority('ROLE_MODERATOR', 'ROLE_ADMIN')")
-    public ResponseEntity<Void> addMember(@PathVariable Long roomId, @PathVariable Long userId) {
-        roomService.addMember(roomId, userId);
+    @PostMapping("/{roomId}/add-members")
+    @PreAuthorize("hasAnyAuthority('ROLE_MODERATOR')")
+    public ResponseEntity<Void> addMembers(@PathVariable Long roomId, @RequestBody RoomAddMembersRequest req) {
+        roomService.addMembers(roomId, req.getUserIds());
         return ResponseEntity.noContent().build();
     }
 }
