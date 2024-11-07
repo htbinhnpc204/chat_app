@@ -9,6 +9,9 @@ const adminMenuItems = () => (
     <MenuItem icon="users" to="/admin/user-management">
       Quản lý tài khoản
     </MenuItem>
+    <MenuItem icon="restroom" to="/admin/rooms">
+      Quản lý phòng chat
+    </MenuItem>
     <MenuItem icon="tachometer-alt" to="/admin/metrics">
       Số liệu
     </MenuItem>

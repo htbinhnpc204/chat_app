@@ -26,3 +26,12 @@ export const Home = () => (
     </NavLink>
   </NavItem>
 );
+
+export const CreateRoom = ({ setShowModal }: { setShowModal: (show: boolean) => void }) => (
+  <NavItem>
+    <NavLink tag={Link} to="#room_create" className="d-flex align-items-center" onClick={() => setShowModal(true)}>
+      <FontAwesomeIcon icon="plus" />
+      <span>Tạo phòng chat</span>
+    </NavLink>
+  </NavItem>
+);

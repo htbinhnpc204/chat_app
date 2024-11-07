@@ -74,6 +74,8 @@ export const RoomManagement = () => {
   const rooms = useAppSelector(state => state.roomManagement.rooms || []);
   const totalItems = useAppSelector(state => state.roomManagement.totalItems || 0);
   const loading = useAppSelector(state => state.roomManagement.loading || false);
+  const account = useAppSelector(state => state.authentication.account);
+
   const getSortIconByFieldName = (fieldName: string) => {
     const sortFieldName = pagination.sort;
     const order = pagination.order;
@@ -105,6 +107,7 @@ export const RoomManagement = () => {
             <th className="hand" onClick={sort('name')}>
               Tên phòng <FontAwesomeIcon icon={getSortIconByFieldName('login')} />
             </th>
+            <th className="hand">Số thành viên</th>
             <th className="hand" onClick={sort('description')}>
               Mô tả <FontAwesomeIcon icon={getSortIconByFieldName('email')} />
             </th>
@@ -129,6 +132,7 @@ export const RoomManagement = () => {
                 </Button>
               </td>
               <td>{room.name}</td>
+              <td>{room.members?.length}</td>
               <td>{room.description}</td>
               <td>
                 {room.createdDate ? <TextFormat value={room.createdDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid /> : null}
@@ -147,7 +151,7 @@ export const RoomManagement = () => {
                   <Button tag={Link} to={`${room.id}/edit`} color="primary" size="sm">
                     <FontAwesomeIcon icon="pencil-alt" /> <span className="d-none d-md-inline">Sửa</span>
                   </Button>
-                  <Button tag={Link} to={`${room.id}/delete`} color="danger" size="sm" disabled={room.createdBy !== room.username}>
+                  <Button tag={Link} to={`${room.id}/delete`} color="danger" size="sm" disabled={room.createdBy !== account.username}>
                     <FontAwesomeIcon icon="trash" /> <span className="d-none d-md-inline">Xóa</span>
                   </Button>
                 </div>

@@ -2,10 +2,10 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
-import RoomManagement from 'app/modules/room/room-management';
-import RoomManagementUpdate from 'app/modules/room/room-management-update';
-import RoomManagementDetail from 'app/modules/room/room-management-detail';
-import RoomManagementDeleteDialog from 'app/modules/room/room-management-delete-dialog';
+import RoomManagement from './room-management';
+import RoomManagementUpdate from './room-management-update';
+import RoomManagementDetail from './room-management-detail';
+import RoomManagementDeleteDialog from './room-management-delete-dialog';
 
 const RoomManagementRoutes = () => (
   <div>

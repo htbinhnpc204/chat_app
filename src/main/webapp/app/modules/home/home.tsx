@@ -26,21 +26,6 @@ export const Home = () => {
           </div>
         ) : null}
 
-        {/* If user's authorities contain ROLE_MODERATOR display the room action (Create, modify, delete) */}
-
-        {account?.authorities?.includes('ROLE_MODERATOR') ? (
-          <div>
-            <Alert color="success">You can manage rooms</Alert>
-            <Link to="/rooms" className="btn btn-primary">
-              Manage rooms
-            </Link>
-
-            <Link to="/rooms/new" className="btn btn-primary">
-              Create new room
-            </Link>
-          </div>
-        ) : null}
-
         <p className="lead">Đây là trang chủ của bạn</p>
         {account?.login ? (
           <div>
